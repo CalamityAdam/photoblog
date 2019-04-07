@@ -29,6 +29,7 @@ export const fetchInitialPhotos = () => async dispatch => {
 }
 export const uploadPhoto = file => async dispatch => {
   try {
+    // testing...
     console.log('🚯', file)
     JSON.parse( JSON.stringify(file) )
     photosRef.push().set(file)

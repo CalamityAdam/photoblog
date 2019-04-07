@@ -8,7 +8,6 @@ export class PhotoList extends Component {
     this.props.fetchPhotos()
   }
   render() {
-    console.log('😍', this.props.allPhotos)
     return (
       <div>
         hello from photoList

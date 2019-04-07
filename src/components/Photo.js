@@ -1,47 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { uploadPhoto } from '../redux';
 
-class Photo extends React.Component {
-  state = {
-    name: ''
-  }
+const Photo = ({ postPhoto }) => {
+  const [ name, setName ] = useState('');
   
-  handleChange = event => {
-    const {
-      target: { name, value },
-    } = event
-    this.setState({
-      [name]: value,
-    })
-  }
-  handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    this.props.postPhoto(this.state)
-    this.setState({
-      name: '',
-    })
+    postPhoto({name: name})
+    setName('')
   }
-  
-  render() {
     
-    return (
-      <div>
+  return (
+    <div>
       hello from photo.js
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={handleSubmit}>
       <label htmlFor="name">Name: </label>
         <input 
           type="text"
           name="name"
-          value={this.state.name}
-          onChange={this.handleChange}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
         <input type="submit" value="Submit" />
       </form>
     </div>
   );
-}
 };
+
 
 const mapDispatch = dispatch => ({
   postPhoto: photo => dispatch(uploadPhoto(photo))
