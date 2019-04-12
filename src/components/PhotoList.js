@@ -16,7 +16,11 @@ export class PhotoList extends Component {
             {this.props.allPhotos.map((photo) => {
               return (
                 <div key={photo.key}>
-                  {photo.name}
+                  <img 
+                    alt={photo.original_filename} 
+                    src={photo.secure_url} 
+                    width='500'
+                  />
                 </div>
               )
             })}

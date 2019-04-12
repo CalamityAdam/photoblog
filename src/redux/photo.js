@@ -6,16 +6,25 @@ import snapshotToArray from '../utils/snapshotToArray';
 // ACTIONS
 const GOT_PHOTOS = 'GOT_PHOTOS';
 const ADD_PHOTO = 'ADD_PHOTO';
+const UPLOAD_STARTED = 'UPLOAD_STARTED';
+const UPLOAD_FINISHED = 'UPLOAD_FINISHED';
 
 // CREATORS
 const gotPhotos = allPhotos => ({
-  type: 'GOT_PHOTOS',
+  type: GOT_PHOTOS,
   allPhotos,
 })
 const addPhoto = photo => ({
-  type: 'ADD_PHOTO',
+  type: ADD_PHOTO,
   payload: photo
 })
+const uploadStarted = () => ({
+  type: UPLOAD_STARTED,
+})
+const uploadComplete = () => ({
+  type: UPLOAD_FINISHED,
+})
+
 
 // THUNKS
 export const fetchInitialPhotos = () => async dispatch => {
@@ -27,18 +36,25 @@ export const fetchInitialPhotos = () => async dispatch => {
     console.error(error);
   }
 }
-export const uploadPhoto = file => async dispatch => {
+export const uploadPhoto = imageFile => async dispatch => {
   try {
-    // testing...
-    console.log('🚯', file)
-    JSON.parse( JSON.stringify(file) )
-    photosRef.push().set(file)
-    // const dataToSend = new FormData();
-    // dataToSend.append('file', file);
-    // // dataToSend.append('upload_preset', 'photoblog')
+    dispatch(uploadStarted());
+    const imageData = new FormData();
+    imageData.append('file', imageFile);
+    imageData.append('upload_preset', 'photoblog');
+    const { data } = await axios.post('https://api.cloudinary.com/v1_1/calamityadam/image/upload', imageData)
     
-    // const res = await axios.post('https://api.cloudinary.com/v1_1/calamityadam/image/upload', dataToSend);
-    // const file = await res.json();
+    /**
+     * cloudinary images format:
+     * image: responseFile.secure_url,
+     * largeImage: responseFile.eager[0].secure_url
+     */
+    
+    console.log('📷', data)
+    // JSON.parse( JSON.stringify(file) )
+    photosRef.push().set(data)
+    dispatch(uploadComplete());
+    // TODO: remove file from `uploadingPhoto`
   } catch (error) {
     console.error(error)
   }
@@ -52,7 +68,15 @@ const handlers = {
   }),
   [ADD_PHOTO]: (state, {payload}) => ({
     ...state,
-    allPhotos: [...state.allPhotos, payload]
+    allPhotos: [...state.allPhotos, payload],
+  }),
+  [UPLOAD_STARTED]: (state) => ({
+    ...state,
+    uploading: true,
+  }),
+  [UPLOAD_FINISHED]: (state) => ({
+    ...state,
+    uploading: false,
   })
 };
 
@@ -60,6 +84,8 @@ const handlers = {
 const initialState = {
   allPhotos: [],
   selectedPhoto: {},
+  photoToUpload: {},
+  uploading: false,
 }
 
 // REDUCER
