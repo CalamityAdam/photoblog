@@ -1,15 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { uploadPhoto } from '../redux';
-import Styled from 'styled-components'
+import Styled from 'styled-components';
 
 const Section = Styled.div`
-  padding-top: 4em;
+  /* padding-top: 4em; */
   box-sizing: border-box;
   position: relative;
   width: 100vw;
   overflow: hidden;
-  height: 75vh;
+  height: 150vh;
   display: flex;
   justify-content: center;
   background-color: orange;
@@ -19,21 +20,18 @@ const Photo = (props) => {
   const [ image, setImage ] = useState({});
 
   const handleSubmit = (event) => {
-    console.log('submit clicked')
+    console.log('submit clicked');
     event.preventDefault();
-    props.postPhoto(image)
-  }
+    props.postPhoto(image);
+  };
   const handleChange = (event) => {
-    event.preventDefault()
-    console.log('changed')
+    event.preventDefault();
+    console.log('changed');
     const files = event.target.files;
-    console.log('files from change: ', files)
+    console.log('files from change: ', files);
     // the image is at event.target.files[0]
-    setImage(files[0])
-  }
-  // useEffect(() => {
-  //   document.title = `${name}`
-  // })
+    setImage(files[0]);
+  };
     
   return (
     <Section>
@@ -49,20 +47,20 @@ const Photo = (props) => {
           onChange={handleChange}
           disabled={props.loading}
         />
-        <button type="submit" disabled={props.loading}>Upload{props.loading ? 'ing' : ''}</button>
+        <button type="submit" disabled={props.loading}>
+          Upload{props.loading ? 'ing' : ''}
+        </button>
       </form>
     </Section>
   );
 };
 
 const mapState = state => {
-  return { loading: state.photo.uploading }
-}
+  return { loading: state.photo.uploading };
+};
 const mapDispatch = dispatch => ({
-  postPhoto: function(photo) {
-    return dispatch(uploadPhoto(photo))
-  }
-})
+  postPhoto: photo => dispatch(uploadPhoto(photo))
+});
 
 export default connect(mapState, mapDispatch)(Photo);
 

@@ -46,8 +46,8 @@ export const uploadPhoto = imageFile => async dispatch => {
     
     /**
      * cloudinary images format:
-     * image: responseFile.secure_url,
-     * largeImage: responseFile.eager[0].secure_url
+     * regular image: responseFile.secure_url,
+     * large image: responseFile.eager[0].secure_url
      */
     
     console.log('📷', data)
